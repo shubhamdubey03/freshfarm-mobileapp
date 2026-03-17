@@ -22,7 +22,8 @@ import {
     LayoutGrid,
     ShoppingBag,
     User,
-    ShoppingBasket
+    ShoppingBasket,
+    LogOut
 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -72,14 +73,19 @@ const PopularProducts = [
     },
 ];
 
-const HomeScreen = () => {
-    const { user } = useAuth();
+const HomeScreen = ({ onNavigateCategories, onLogout, onNavigateProduct, onNavigateCheckout }) => {
+    const { user, logout } = useAuth();
 
     // Extract first name for a friendlier greeting
     const getFirstName = () => {
         if (!user) return 'User';
         const name = user.full_name || user.username || 'User';
         return name.split(' ')[0];
+    };
+
+    const handleLogout = async () => {
+        await logout();
+        if (onLogout) onLogout();
     };
 
     return (
@@ -98,10 +104,21 @@ const HomeScreen = () => {
                             <Text style={styles.greetingHeader}>Good Morning,</Text>
                             <Text style={styles.userName}>{getFirstName()}</Text>
                         </View>
-                        <TouchableOpacity style={styles.notificationButton}>
-                            <Bell size={24} color="#1E293B" />
-                            <View style={styles.notificationDot} />
-                        </TouchableOpacity>
+                        <View style={styles.headerRight}>
+                            <TouchableOpacity
+                                style={styles.notificationButton}
+                                onPress={onNavigateCheckout}
+                            >
+                                <Heart size={22} color="#EF4444" fill="#EF4444" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.notificationButton, { marginLeft: 12 }]}>
+                                <Bell size={24} color="#1E293B" />
+                                <View style={styles.notificationDot} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.notificationButton, { marginLeft: 12 }]} onPress={handleLogout}>
+                                <LogOut size={22} color="#F87171" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
                     {/* Search Bar */}
@@ -142,13 +159,17 @@ const HomeScreen = () => {
                     {/* Categories Section */}
                     <View style={styles.sectionHeader}>
                         <Text style={styles.sectionTitle}>Categories</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={onNavigateCategories}>
                             <Text style={styles.seeAllText}>See All</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.categoriesContainer}>
                         {Categories.map((category) => (
-                            <TouchableOpacity key={category.id} style={styles.categoryCard}>
+                            <TouchableOpacity
+                                key={category.id}
+                                style={styles.categoryCard}
+                                onPress={onNavigateCategories}
+                            >
                                 <View style={[styles.categoryIconContainer, { backgroundColor: category.color }]}>
                                     <Text style={styles.categoryIcon}>{category.icon}</Text>
                                 </View>
@@ -168,7 +189,11 @@ const HomeScreen = () => {
                     {/* Products Grid */}
                     <View style={styles.productsGrid}>
                         {PopularProducts.map((product) => (
-                            <TouchableOpacity key={product.id} style={styles.productCard}>
+                            <TouchableOpacity
+                                key={product.id}
+                                style={styles.productCard}
+                                onPress={() => onNavigateProduct(product.id)}
+                            >
                                 <View style={styles.productImageContainer}>
                                     <Image source={{ uri: product.image }} style={styles.productImage} />
                                     <TouchableOpacity style={styles.wishlistButton}>
@@ -202,13 +227,16 @@ const HomeScreen = () => {
                     <Home size={24} color="#38BDF8" fill="#38BDF8" />
                     <Text style={[styles.tabText, { color: '#38BDF8' }]}>Home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem}>
+                <TouchableOpacity style={styles.tabItem} onPress={onNavigateCategories}>
                     <LayoutGrid size={24} color="#94A3B8" />
                     <Text style={styles.tabText}>Categories</Text>
                 </TouchableOpacity>
                 <View style={styles.cartButtonWrapper}>
-                    <TouchableOpacity style={styles.floatingCartButton}>
+                    <TouchableOpacity style={styles.floatingCartButton} onPress={onNavigateCheckout}>
                         <ShoppingBasket size={28} color="#FFFFFF" />
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>2</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={styles.tabItem}>
@@ -239,6 +267,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 10,
         marginBottom: 20,
+    },
+    headerRight: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     locationSelector: {
         flexDirection: 'row',
@@ -517,19 +549,37 @@ const styles = StyleSheet.create({
         marginTop: -40,
     },
     floatingCartButton: {
-        width: 60,
-        height: 60,
+        width: 64,
+        height: 64,
         backgroundColor: '#38BDF8',
-        borderRadius: 30,
+        borderRadius: 32,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 5,
+        borderWidth: 4,
         borderColor: '#F8FAFC',
         shadowColor: '#38BDF8',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.3,
         shadowRadius: 15,
         elevation: 8,
+    },
+    badge: {
+        position: 'absolute',
+        top: -6,
+        right: -6,
+        backgroundColor: '#F87171',
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#FFFFFF',
+    },
+    badgeText: {
+        color: '#FFFFFF',
+        fontSize: 10,
+        fontWeight: '800',
     },
 });
 

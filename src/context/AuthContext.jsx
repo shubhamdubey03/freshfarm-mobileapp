@@ -1,12 +1,38 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_URLS from '../config/api';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null);
+    const [isAppReady, setIsAppReady] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    // Initial load: check for stored token and user
+    useEffect(() => {
+        const loadAuthData = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('token');
+                const storedUser = await AsyncStorage.getItem('user');
+
+                if (storedToken) {
+                    setToken(storedToken);
+                }
+                if (storedUser) {
+                    setUser(JSON.parse(storedUser));
+                }
+            } catch (e) {
+                console.error('Failed to load auth data from storage');
+            } finally {
+                setIsAppReady(true);
+            }
+        };
+
+        loadAuthData();
+    }, []);
 
     const sendOtp = async (phoneNumber) => {
         setLoading(true);
@@ -18,13 +44,12 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({ phone: phoneNumber }),
             });
 
-
             const responseText = await response.text();
-            console.log("responseText", responseText)
+            console.log("responseText", responseText);
             let data;
             try {
                 data = JSON.parse(responseText);
-                console.log("kakakakakak", data)
+                console.log("data", data);
             } catch (e) {
                 console.error('Failed to parse response as JSON:', responseText);
                 throw new Error('Server returned an unexpected response (HTML instead of JSON).');
@@ -54,18 +79,29 @@ export const AuthProvider = ({ children }) => {
             });
 
             const responseText = await response.text();
-            console.log("responseText", responseText)
+            console.log("responseText", responseText);
             let data;
             try {
                 data = JSON.parse(responseText);
-                console.log("---------", data)
+                console.log("verify response data", data);
             } catch (e) {
                 console.error('Failed to parse response as JSON:', responseText);
                 throw new Error('Server returned an unexpected response.');
             }
 
             if (response.ok) {
-                setUser(data.user);
+                const authToken = data.token || data.access || data.access_token;
+                const userData = data.user;
+
+                if (authToken) {
+                    await AsyncStorage.setItem('token', authToken);
+                    setToken(authToken);
+                }
+                if (userData) {
+                    await AsyncStorage.setItem('user', JSON.stringify(userData));
+                    setUser(userData);
+                }
+
                 setLoading(false);
                 return { success: true, data };
             } else {
@@ -98,6 +134,18 @@ export const AuthProvider = ({ children }) => {
             }
 
             if (response.ok) {
+                const authToken = data.token || data.access || data.access_token;
+                const userProfile = data.user;
+
+                if (authToken) {
+                    await AsyncStorage.setItem('token', authToken);
+                    setToken(authToken);
+                }
+                if (userProfile) {
+                    await AsyncStorage.setItem('user', JSON.stringify(userProfile));
+                    setUser(userProfile);
+                }
+
                 setLoading(false);
                 return { success: true, data };
             } else {
@@ -110,12 +158,19 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        setUser(null);
+    const logout = async () => {
+        try {
+            await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('user');
+            setToken(null);
+            setUser(null);
+        } catch (e) {
+            console.error('Error clearing auth data during logout');
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, error, sendOtp, verifyOtp, register, logout }}>
+        <AuthContext.Provider value={{ user, token, loading, isAppReady, error, sendOtp, verifyOtp, register, logout }}>
             {children}
         </AuthContext.Provider>
     );
