@@ -11,11 +11,6 @@ import {
 } from 'react-native';
 import {
     Search,
-    Home,
-    LayoutGrid,
-    ShoppingBag,
-    User,
-    ShoppingBasket,
     Leaf,
     Droplet,
     Sprout,
@@ -26,6 +21,7 @@ import {
     Croissant
 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BottomTabs from '../../components/BottomTabs';
 
 const { width } = Dimensions.get('window');
 
@@ -40,7 +36,7 @@ const categories = [
     { id: 8, name: 'Bakery', count: '15+ Items', color: '#FFFBEB', icon: Croissant, iconColor: '#F59E0B' },
 ];
 
-const CategoriesScreen = ({ onNavigateHome, onNavigateProduct }) => {
+const CategoriesScreen = ({ onNavigateHome, onNavigateProduct, onNavigateCheckout, onNavigateOrders, onNavigateProfile }) => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" />
@@ -81,33 +77,14 @@ const CategoriesScreen = ({ onNavigateHome, onNavigateProduct }) => {
                 </View>
             </SafeAreaView>
 
-            {/* Bottom Tab Bar */}
-            <View style={styles.tabBar}>
-                <TouchableOpacity style={styles.tabItem} onPress={onNavigateHome}>
-                    <Home size={24} color="#94A3B8" />
-                    <Text style={styles.tabText}>Home</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem}>
-                    <LayoutGrid size={24} color="#38BDF8" fill="#38BDF8" />
-                    <Text style={[styles.tabText, { color: '#38BDF8' }]}>Categories</Text>
-                </TouchableOpacity>
-                <View style={styles.cartButtonWrapper}>
-                    <TouchableOpacity style={styles.floatingCartButton}>
-                        <ShoppingBasket size={28} color="#FFFFFF" />
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText}>2</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity style={styles.tabItem}>
-                    <ShoppingBag size={24} color="#94A3B8" />
-                    <Text style={styles.tabText}>Orders</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem}>
-                    <User size={24} color="#94A3B8" />
-                    <Text style={styles.tabText}>Profile</Text>
-                </TouchableOpacity>
-            </View>
+            <BottomTabs
+                activeTab="categories"
+                onNavigateHome={onNavigateHome}
+                onNavigateCategories={() => { }}
+                onNavigateCheckout={onNavigateCheckout}
+                onNavigateOrders={onNavigateOrders}
+                onNavigateProfile={onNavigateProfile}
+            />
         </View>
     );
 };
@@ -187,66 +164,6 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#64748B',
         fontWeight: '500',
-    },
-    tabBar: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: 85,
-        backgroundColor: '#FFFFFF',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        paddingBottom: 25,
-        borderTopWidth: 1,
-        borderTopColor: '#F1F5F9',
-    },
-    tabItem: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    tabText: {
-        fontSize: 11,
-        fontWeight: '600',
-        color: '#94A3B8',
-        marginTop: 4,
-    },
-    cartButtonWrapper: {
-        marginTop: -45,
-    },
-    floatingCartButton: {
-        width: 64,
-        height: 64,
-        backgroundColor: '#38BDF8',
-        borderRadius: 32,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 4,
-        borderColor: '#F8FAFC',
-        shadowColor: '#38BDF8',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.3,
-        shadowRadius: 15,
-        elevation: 8,
-    },
-    badge: {
-        position: 'absolute',
-        top: -6,
-        right: -6,
-        backgroundColor: '#F87171',
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#FFFFFF',
-    },
-    badgeText: {
-        color: '#FFFFFF',
-        fontSize: 10,
-        fontWeight: '800',
     },
 });
 

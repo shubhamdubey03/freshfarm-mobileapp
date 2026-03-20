@@ -34,16 +34,21 @@ export const AuthProvider = ({ children }) => {
         loadAuthData();
     }, []);
 
-    const sendOtp = async (phoneNumber) => {
+    const sendOtp = async (phoneNumber, countryCode) => {
         setLoading(true);
         setError(null);
         try {
             const response = await fetch(API_URLS.SEND_OTP, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: phoneNumber }),
+                body: JSON.stringify({
+                    phone: phoneNumber,
+                    country_code: countryCode,
+
+                }),
             });
 
+            console.log("response", response);
             const responseText = await response.text();
             console.log("responseText", responseText);
             let data;
@@ -75,7 +80,7 @@ export const AuthProvider = ({ children }) => {
             const response = await fetch(API_URLS.VERIFY_OTP, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: phoneNumber, otp }),
+                body: JSON.stringify({ phone: phoneNumber, country_code: "+91", otp }),
             });
 
             const responseText = await response.text();

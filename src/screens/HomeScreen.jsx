@@ -17,17 +17,11 @@ import {
     MapPin,
     ChevronDown,
     Heart,
-    Plus,
-    Home,
-    LayoutGrid,
-    ShoppingBag,
-    User,
-    ShoppingBasket,
-    LogOut
+    Plus
 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { useAuth } from '../context/AuthContext';
+import BottomTabs from '../components/BottomTabs';
 
 const { width } = Dimensions.get('window');
 
@@ -73,8 +67,8 @@ const PopularProducts = [
     },
 ];
 
-const HomeScreen = ({ onNavigateCategories, onLogout, onNavigateProduct, onNavigateCheckout }) => {
-    const { user, logout } = useAuth();
+const HomeScreen = ({ onNavigateCategories, onNavigateProduct, onNavigateCheckout, onNavigateOrders, onNavigateProfile }) => {
+    const { user } = useAuth();
 
     // Extract first name for a friendlier greeting
     const getFirstName = () => {
@@ -83,10 +77,6 @@ const HomeScreen = ({ onNavigateCategories, onLogout, onNavigateProduct, onNavig
         return name.split(' ')[0];
     };
 
-    const handleLogout = async () => {
-        await logout();
-        if (onLogout) onLogout();
-    };
 
     return (
         <View style={styles.container}>
@@ -114,9 +104,6 @@ const HomeScreen = ({ onNavigateCategories, onLogout, onNavigateProduct, onNavig
                             <TouchableOpacity style={[styles.notificationButton, { marginLeft: 12 }]}>
                                 <Bell size={24} color="#1E293B" />
                                 <View style={styles.notificationDot} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.notificationButton, { marginLeft: 12 }]} onPress={handleLogout}>
-                                <LogOut size={22} color="#F87171" />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -221,33 +208,14 @@ const HomeScreen = ({ onNavigateCategories, onLogout, onNavigateProduct, onNavig
                 </ScrollView>
             </SafeAreaView>
 
-            {/* Custom Bottom Tab Bar */}
-            <View style={styles.tabBar}>
-                <TouchableOpacity style={styles.tabItem}>
-                    <Home size={24} color="#38BDF8" fill="#38BDF8" />
-                    <Text style={[styles.tabText, { color: '#38BDF8' }]}>Home</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem} onPress={onNavigateCategories}>
-                    <LayoutGrid size={24} color="#94A3B8" />
-                    <Text style={styles.tabText}>Categories</Text>
-                </TouchableOpacity>
-                <View style={styles.cartButtonWrapper}>
-                    <TouchableOpacity style={styles.floatingCartButton} onPress={onNavigateCheckout}>
-                        <ShoppingBasket size={28} color="#FFFFFF" />
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText}>2</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity style={styles.tabItem}>
-                    <ShoppingBag size={24} color="#94A3B8" />
-                    <Text style={styles.tabText}>Orders</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem}>
-                    <User size={24} color="#94A3B8" />
-                    <Text style={styles.tabText}>Profile</Text>
-                </TouchableOpacity>
-            </View>
+            <BottomTabs
+                activeTab="home"
+                onNavigateHome={() => { }}
+                onNavigateCategories={onNavigateCategories}
+                onNavigateCheckout={onNavigateCheckout}
+                onNavigateOrders={onNavigateOrders}
+                onNavigateProfile={onNavigateProfile}
+            />
         </View>
     );
 };
@@ -520,66 +488,6 @@ const styles = StyleSheet.create({
         borderRadius: 17,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    tabBar: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: 80,
-        backgroundColor: '#FFFFFF',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        paddingBottom: 20,
-        borderTopWidth: 1,
-        borderTopColor: '#F1F5F9',
-    },
-    tabItem: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    tabText: {
-        fontSize: 11,
-        fontWeight: '600',
-        color: '#94A3B8',
-        marginTop: 4,
-    },
-    cartButtonWrapper: {
-        marginTop: -40,
-    },
-    floatingCartButton: {
-        width: 64,
-        height: 64,
-        backgroundColor: '#38BDF8',
-        borderRadius: 32,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 4,
-        borderColor: '#F8FAFC',
-        shadowColor: '#38BDF8',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.3,
-        shadowRadius: 15,
-        elevation: 8,
-    },
-    badge: {
-        position: 'absolute',
-        top: -6,
-        right: -6,
-        backgroundColor: '#F87171',
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#FFFFFF',
-    },
-    badgeText: {
-        color: '#FFFFFF',
-        fontSize: 10,
-        fontWeight: '800',
     },
 });
 

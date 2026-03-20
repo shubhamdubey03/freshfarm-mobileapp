@@ -19,9 +19,10 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import { useAuth } from '../context/AuthContext';
 import API_URLS from '../config/api';
 
-const LoginScreen = ({ onBack, onSignup, onContinue }) => {
+const LoginScreen = ({ onBack, onSignup, onContinue, role }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const { sendOtp, loading, error } = useAuth();
+    const [countryCode, setCountryCode] = useState('+91');
 
     // Animations
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -54,14 +55,26 @@ const LoginScreen = ({ onBack, onSignup, onContinue }) => {
             return;
         }
 
-        const fullPhone = phoneNumber;
-        const result = await sendOtp(fullPhone);
-        console.log("111111111111", result);
+        // const fullPhone = phoneNumber;
+        // const country_code = "+91";
+        const result = await sendOtp(phoneNumber, countryCode);
+        console.log("111111111111222222222222", result);
         if (result.success) {
-            Alert.alert('Success', 'OTP sent successfully!');
-            setTimeout(() => {
-                onContinue(fullPhone);
-            }, 300);
+            if (
+                role === "vendor" ||
+                role === "farmer" ||
+                role === "user" ||
+                role === "customer" ||
+                role === "collection_center" ||
+                role === "delivery"
+            ) {
+                Alert.alert('Success', 'OTP sent successfully!');
+                setTimeout(() => {
+                    onContinue(phoneNumber, role);
+                }, 300);
+            } else {
+                Alert.alert('Access Denied', 'There is no account associated with this phone number for the selected role.');
+            }
         } else {
             Alert.alert('Error', result.error || 'Failed to send OTP');
         }
@@ -134,10 +147,12 @@ const LoginScreen = ({ onBack, onSignup, onContinue }) => {
                         <Animated.View style={[styles.formCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
                             <Text style={styles.inputLabel}>Phone Number</Text>
                             <View style={styles.inputContainer}>
-                                <TouchableOpacity style={styles.countryPicker}>
-                                    <Text style={styles.countryCode}>+91</Text>
-                                    <ChevronDown size={16} color="#64748B" />
-                                </TouchableOpacity>
+                                <TextInput
+                                    style={[styles.input, { maxWidth: 80 }]}
+                                    value={countryCode}
+                                    onChangeText={setCountryCode}
+                                    keyboardType="phone-pad"
+                                />
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Enter phone number"

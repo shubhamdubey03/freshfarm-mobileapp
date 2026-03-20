@@ -19,7 +19,7 @@ import { useAuth } from '../context/AuthContext';
 
 const { width } = Dimensions.get('window');
 
-const SignupScreen = ({ onBack, onLogin, onContinue }) => {
+const SignupScreen = ({ onBack, onLogin, onContinue, role }) => {
     const [fullName, setFullName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [email, setEmail] = useState('');
@@ -52,17 +52,16 @@ const SignupScreen = ({ onBack, onLogin, onContinue }) => {
         }
 
         const userData = {
-            username: email, // Using email as username
+            username: fullName, // Using email as username
             email: email,
             phone: phoneNumber,
-            password: 'dummy_password_123', // Backend requires a password
-            role: 'user', // Default role
-            full_name: fullName, // Optional if backed supports it
+            user_role: role,
+            country_code: "+91",
         };
 
         const result = await register(userData);
         if (result.success) {
-            onContinue(phoneNumber);
+            onContinue(phoneNumber, role);
         } else {
             alert(result.error || 'Registration failed');
         }
@@ -133,7 +132,7 @@ const SignupScreen = ({ onBack, onLogin, onContinue }) => {
                                     </View>
                                     <TextInput
                                         style={styles.input}
-                                        placeholder="+1 (555) 000-0000"
+                                        placeholder="+91 1234567890"
                                         placeholderTextColor="#94A3B8"
                                         keyboardType="phone-pad"
                                         value={phoneNumber}

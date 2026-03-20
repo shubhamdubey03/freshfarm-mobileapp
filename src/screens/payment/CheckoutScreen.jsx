@@ -7,11 +7,11 @@ import {
     TouchableOpacity,
     Image,
     StatusBar,
-    SafeAreaView,
     Dimensions,
+    Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-    ChevronLeft,
     MapPin,
     Clock,
     Sun,
@@ -21,10 +21,11 @@ import {
     Banknote,
     ArrowLeft
 } from 'lucide-react-native';
+import BottomTabs from '../../components/BottomTabs';
 
 const { width } = Dimensions.get('window');
 
-const CheckoutScreen = ({ onBack, onPlaceOrder }) => {
+const CheckoutScreen = ({ onBack, onPlaceOrder, onNavigateHome, onNavigateCategories, onNavigateOrders, onNavigateProfile }) => {
     const [selectedSlot, setSelectedSlot] = useState('morning');
     const [paymentMethod, setPaymentMethod] = useState('upi');
 
@@ -55,7 +56,11 @@ const CheckoutScreen = ({ onBack, onPlaceOrder }) => {
             <SafeAreaView style={styles.safeArea}>
                 {/* Header */}
                 <View style={styles.header}>
-                    <TouchableOpacity style={styles.backButton} onPress={onBack}>
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={onBack}
+                        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                    >
                         <ArrowLeft size={24} color="#1E293B" />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Checkout</Text>
@@ -88,7 +93,7 @@ const CheckoutScreen = ({ onBack, onPlaceOrder }) => {
                         <Text style={styles.sectionTitle}>Order Items</Text>
                         {orderItems.map((item) => (
                             <View key={item.id} style={styles.itemCard}>
-                                <Image source={{ uri: item.image }} style={styles.itemImage} />
+                                <Image source={{ uri: item.image }} style={styles.itemCardImage} />
                                 <View style={styles.itemDetails}>
                                     <Text style={styles.itemName}>{item.name}</Text>
                                     <Text style={styles.itemWeight}>{item.weight}</Text>
@@ -186,9 +191,18 @@ const CheckoutScreen = ({ onBack, onPlaceOrder }) => {
                         </TouchableOpacity>
                     </View>
 
-                    <View style={{ height: 40 }} />
+                    <View style={{ height: 120 }} />
                 </ScrollView>
             </SafeAreaView>
+
+            <BottomTabs
+                activeTab="checkout"
+                onNavigateHome={onNavigateHome}
+                onNavigateCategories={onNavigateCategories}
+                onNavigateCheckout={() => { }}
+                onNavigateOrders={onNavigateOrders}
+                onNavigateProfile={onNavigateProfile}
+            />
         </View>
     );
 };
@@ -292,7 +306,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 1,
     },
-    itemImage: {
+    itemCardImage: {
         width: 60,
         height: 60,
         borderRadius: 12,
