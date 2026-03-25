@@ -11,12 +11,12 @@ import {
     Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-    ChevronLeft, 
-    Truck, 
-    MapPin, 
-    CircleDollarSign, 
-    Clock, 
+import {
+    ChevronLeft,
+    Truck,
+    MapPin,
+    CircleDollarSign,
+    Clock,
     ShoppingBag,
     Save
 } from 'lucide-react-native';
@@ -57,8 +57,8 @@ const DeliveryPreferencesScreen = ({ onBack }) => {
                     <View style={{ width: 44 }} />
                 </View>
 
-                <ScrollView 
-                    style={styles.scrollView} 
+                <ScrollView
+                    style={styles.scrollView}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.scrollContent}
                 >
@@ -103,7 +103,7 @@ const DeliveryPreferencesScreen = ({ onBack }) => {
                     {isDeliveryEnabled && (
                         <View style={styles.detailsSection}>
                             <Text style={styles.sectionTitle}>Delivery Configuration</Text>
-                            
+
                             <PreferenceItem label="Maximum Delivery Radius" icon={MapPin}>
                                 <View style={styles.inputGroup}>
                                     <TextInput

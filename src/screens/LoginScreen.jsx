@@ -61,12 +61,12 @@ const LoginScreen = ({ onBack, onSignup, onContinue, role }) => {
         console.log("111111111111222222222222", result);
         if (result.success) {
             if (
-                role === "vendor" ||
-                role === "farmer" ||
-                role === "user" ||
-                role === "customer" ||
-                role === "collection_center" ||
-                role === "delivery"
+                result.data.role === "vendor" ||
+                result.data.role === "farmer" ||
+                result.data.role === "user" ||
+                result.data.role === "customer" ||
+                result.data.role === "collection_center" ||
+                result.data.role === "delivery"
             ) {
                 Alert.alert('Success', 'OTP sent successfully!');
                 setTimeout(() => {

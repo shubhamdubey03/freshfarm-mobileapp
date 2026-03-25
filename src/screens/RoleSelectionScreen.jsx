@@ -53,7 +53,7 @@ const RoleSelectionScreen = ({ onContinue, onLogin }) => {
             icon: Truck,
         },
         {
-            id: 'collection',
+            id: 'collection_center',
             title: 'Collection Center',
             description: 'Manage produce collection',
             icon: Warehouse,

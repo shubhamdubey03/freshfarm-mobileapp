@@ -11,11 +11,11 @@ import {
     Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-    LayoutDashboard, 
-    ClipboardList, 
-    Package, 
-    User, 
+import {
+    LayoutDashboard,
+    ClipboardList,
+    Package,
+    User,
     LogOut,
     ChevronRight,
     Power,
@@ -52,17 +52,17 @@ const VendorProfileScreen = ({ onNavigateDashboard, onNavigateOrders, onNavigate
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" />
             <SafeAreaView style={styles.safeArea} edges={['top']}>
-                <ScrollView 
-                    style={styles.scrollView} 
+                <ScrollView
+                    style={styles.scrollView}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.scrollContent}
                 >
                     {/* Header/Profile Info */}
                     <View style={styles.profileHeader}>
                         <View style={styles.avatarContainer}>
-                            <Image 
-                                source={{ uri: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200' }} 
-                                style={styles.avatar} 
+                            <Image
+                                source={{ uri: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200' }}
+                                style={styles.avatar}
                             />
                             <View style={styles.verifiedBadge}>
                                 <Text style={styles.verifiedText}>VERIFIED</Text>
